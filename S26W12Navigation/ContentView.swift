@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct Song: Identifiable {
+struct Song: Identifiable, Hashable {
     let id = UUID()
     let title: String
     let artist: String
@@ -43,16 +43,46 @@ struct SongView: View {
         ]
     
     var body: some View {
-        List(songs) { song in
-            VStack(alignment: .leading, spacing: 4) {
-                Text(song.title)
-                    .font(.headline)
-                    .foregroundStyle(.primary)
-                Text(song.artist)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+        NavigationStack {
+            List(songs) { song in
+                NavigationLink(value: song) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(song.title)
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                        Text(song.artist)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .navigationDestination(for: Song.self) { song in
+                SongDetailView(song: song)
             }
         }
+    }
+}
+
+struct SongDetailView: View {
+    let song: Song
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 32) {
+                HStack {
+                    Text(song.artist)
+                        .font(.title2)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Text("⭐ \(song.rating)")
+                        .font(.title2)
+                }
+                Text(song.lyrics)
+            }
+            .padding()
+        }
+        .navigationTitle(song.title)
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
