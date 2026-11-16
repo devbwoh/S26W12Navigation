@@ -1,33 +1,5 @@
 import SwiftUI
 
-struct Song: Identifiable, Hashable {
-    let id = UUID()
-    let title: String
-    let artist: String
-    let rating: Int
-    let lyrics: String
-}
-
-struct ContentView: View {
-    var body: some View {
-        TabView {
-            Tab("Songs", systemImage: "list.bullet") {
-                SongView()
-            }
-            
-            Tab("Artist", systemImage: "person") {
-                ArtistView()
-            }
-            .badge(2)
-            
-            Tab("Album", systemImage: "opticaldisc") {
-                AlbumView()
-            }
-            .badge("!")
-        }
-    }
-}
-
 struct SongView: View {
     @State private var songs: [Song] = [
             Song(title: "밤의 공기", artist: "윤슬", rating: 5, lyrics: "차가운 도시의 불빛 속에서 널 찾아 헤매"),
@@ -61,57 +33,4 @@ struct SongView: View {
             }
         }
     }
-}
-
-struct SongDetailView: View {
-    let song: Song
-
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 32) {
-                HStack {
-                    Text(song.artist)
-                        .font(.title2)
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    Text("⭐ \(song.rating)")
-                        .font(.title2)
-                }
-                Text(song.lyrics)
-            }
-            .padding()
-        }
-        .navigationTitle(song.title)
-        .navigationBarTitleDisplayMode(.large)
-    }
-}
-
-struct ArtistView: View {
-    var body: some View {
-        Text("가수 화면")
-    }
-}
-
-struct AlbumView: View {
-    @State private var path = NavigationPath()
-    
-    var body: some View {
-        NavigationStack(path: $path) {
-            VStack {
-                Text("앨범 화면")
-                Button("추천 앨범 신곡") {
-                    let newSong = Song(title: "Miracle", artist: "AURORA", rating: 5, lyrics: "캄캄한 밤 창가에 내리는 별빛처럼\n조용히 네 마음을 두드리는 이 노래\n잠시 눈을 감아봐 멈춰버린 시간 속에서\n우리가 함께 그린 작은 기적이 시작돼")
-                    path.append(newSong)
-                }
-            }
-            .navigationDestination(for: Song.self) { song in
-                SongDetailView(song: song)
-            }
-        }
-    }
-}
-
-
-#Preview {
-    ContentView()
 }
